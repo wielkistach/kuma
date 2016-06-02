@@ -3,9 +3,9 @@
 -r default.txt
 
 # Mozilla's CA bundle
-certifi==2015.11.20.1 \
-    --hash=sha256:ad86683448f7483d4147a64d96856e551734e594c4563747e9fbe2368df13d3f \
-    --hash=sha256:30b0a7354a1b32caa8b4705d3f5fb2dadefac7ba4bf8af8a2176869f93e38f16
+certifi==2016.2.28 \
+    --hash=sha256:75c33d546e0a732a4606749cbadcd81929f30d8b814061ca93cde49933dbb860 \
+    --hash=sha256:5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0
 
 # Analyze Django performance during request
 django-debug-toolbar==1.4 \
@@ -18,23 +18,22 @@ flake8==2.6.0 \
     --hash=sha256:5ae018121a495edeb83097ba1bdd1a8481db24e1f0d54e8a78edb26ba0df82cf
 
 # Calculate hashes for pip 8.x+
-hashin==0.4.1 \
-    --hash=sha256:b26ace086e24d84152a7e6d7d12b336383e835110d5e2e30dfbf22fa336a2e58 \
-    --hash=sha256:e0266d240d589f2419ff669528934db5876d34a19f516fa8b39c42d8221c0591 \
-    --hash=sha256:745623e60c649a6092cdbbb62b758e89654f4d69ec88ad76be8c20685f8ea1ab
+hashin==0.6.0 \
+    --hash=sha256:8d54551aae64dc8c135dfd5c89efd81a5014f7ce79da642b3fc3eef44ccf7a26 \
+    --hash=sha256:7563490ec8c9c361e48c7623898b3585143d379714a03bee4c3d52fb13e85086
 
 # Load testing
-locustio==0.7.3 \
-    --hash=sha256:220e1f97ece2def3454aeecc5070419518e4e16c5aa39d21eb509a38f47847ec
+locustio==0.7.5 \
+    --hash=sha256:e6ddda22751bef69a96a2ecb663b32507a66e90c6f5a0186815ea3d1ebb0c7d2
 
 # Enhanced HTTPS support for httplib and urllib2
 ndg-httpsclient==0.4.0 \
     --hash=sha256:e8c155fdebd9c4bcb0810b4ed01ae1987554b1ee034dd7532d7b8fdae38a6274
 
 # Better test runner, related plugins
-pytest==2.8.7 \
-    --hash=sha256:33612ed6de42f05640fe058aafdf08899eabcb210da74aeb0b788de9695c8bb5 \
-    --hash=sha256:fc4c86be54fce08e4b85b646a736efa18c6cde7599c1d2919f4f74629e018baf
+pytest==2.9.2 \
+    --hash=sha256:ccc23b4aab3ef3e19e731de9baca73f3b1a7e610d9ec65b28c36a5a3305f0349 \
+    --hash=sha256:12c18abb9a09a5b2802dba75c7a2d7d6c8c0f1258abd8243e7688415d87ad1d8
 pytest-cov==2.2.1 \
     --hash=sha256:a8b22e53e7f3b971454c35df99dffe21f4749f539491e935c55d3ff7e1b284fa \
     --hash=sha256:40bfd01002ceaf9e6c5d371d3c4d541d378a4214ea03e45f934980766a809384
