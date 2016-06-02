@@ -46,3 +46,7 @@ pytest-django==2.9.1 \
 tox==2.3.1 \
     --hash=sha256:1823c93ca378092c10bbde428213d3f5066b30adb09e5c001087a83e3e0a402a \
     --hash=sha256:bf7fcc140863820700d3ccd65b33820ba747b61c5fe4e2b91bb8c64cb21a47ee
+
+# Provides translation tools (podebug might be only one "used")
+translate-toolkit==2.0.0b2 \
+    --hash=sha256:0114c29060d043527870cb84f4549854b9ca03b432100d43f29d9c21a0bc95fa
