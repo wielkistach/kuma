@@ -181,32 +181,41 @@ class AllauthPersonaTestCase(UserTestCase):
 
         response = self.client.post(reverse('persona_login'),
                                     follow=True)
-        for expected_string in (
-            # Test that we got:
-            #
-            # * Persona sign-in success message
-            #
-            # * Form with action set to the account-signup URL.
-            #
-            # * Username field, blank
-            #
-            # * Hidden email address field, pre-populated with the
-            #   address used to authenticate to Persona.
-            'Thanks for signing in to MDN with Persona.',
-            ('<form class="submission readable-line-length" method="post" '
-             'action="/en-US/users/account/signup">'),
-            ('<input autofocus="autofocus" id="id_username" '
-             'maxlength="30" name="username" placeholder="Username" '
-             'required="required" type="text" />'),
-            ('<input id="id_email" name="email" type="hidden" '
-             'value="%s" />' % persona_signup_email)):
-            self.assertContains(response, expected_string)
+        doc = pq(response.content)
 
-        for unexpected_string in (
-            '<Account Sign In Failure',
-            '<An error occurred while attempting to sign '
-                'in with your account.'):
-            self.assertNotContains(response, unexpected_string)
+        # Persona sign-in success message
+        self.assertContains(response,
+                            'Thanks for signing in to MDN with Persona.')
+
+        # Form action is account signup URL
+        forms = doc('form.submission')
+        self.assertEqual(len(forms), 1, forms)
+        form_attrib = forms[0].attrib
+        self.assertEqual(form_attrib['action'], '/en-US/users/account/signup')
+
+        # Username field is present, blank
+        fields = doc('input#id_username')
+        self.assertEqual(len(fields), 1, fields)
+        username_attrib = fields[0].attrib
+        self.assertEqual(username_attrib['type'], 'text')
+        self.assertEqual(username_attrib['maxlength'], '30')
+        self.assertEqual(username_attrib['placeholder'], 'Username')
+        self.assertTrue(username_attrib['autofocus'])
+        self.assertTrue(username_attrib['required'])
+        self.assertIsNone(username_attrib.get('value'))
+
+        # Email address is hidden and prepopulated
+        fields = doc('input#id_email')
+        self.assertEqual(len(fields), 1, fields)
+        email_attrib = fields[0].attrib
+        self.assertEqual(email_attrib['type'], 'hidden')
+        self.assertEqual(email_attrib['value'], persona_signup_email)
+
+        # No failure strings
+        self.assertNotContains(response,
+                               'Account Sign In Failure')
+        self.assertNotContains(response,
+                               'An error occurred while attempting to sign ')
 
     @requests_mock.mock()
     def test_persona_signin_copy(self, mock_requests):
