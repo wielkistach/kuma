@@ -12,8 +12,9 @@ celery==3.1.23 \
     --hash=sha256:eaf5dee3becbc35c7754a2d4482d53bdf72ea3f85dd258525259983262081474 \
     --hash=sha256:1a359c815837f9dbf193a7dbc6addafa34612c077ff70c66e3b16e14eebd2418
 
-commonware==0.4.3 --hash=sha256:a7b02a5f76d89a79f861926fb34e029cc4343c13802525c818542a39fe788cce
-contextlib2==0.5.1 --hash=sha256:227c79e126e8a8904a81d162750581ed3d49af2395a3100be7067b7296d33d45
+# Provides middleware for prevent Vary: Cookie
+commonware==0.4.3 \
+    --hash=sha256:a7b02a5f76d89a79f861926fb34e029cc4343c13802525c818542a39fe788cce
 cssselect==0.9.1 --hash=sha256:0535a7e27014874b27ae3a4d33e8749e345bdfa62766195208b7996bf1100682
 
 # Check localization files for issues
@@ -142,7 +143,12 @@ python-magic==0.4.10 --hash=sha256:79fd2865ec96074749825f9e9562953995d5bf12b6793
 python-memcached==1.54 --hash=sha256:67e1c18b6b99ca4c2c8e4a02e0a96174bf7068919a5aff52836600974c1ef4d8
 python-openid==2.2.5 --hash=sha256:92c51c3ecec846cbec4aeff11f9ff47303d4a63f93b0e6ac0ec02a091fed70ef
 pytidylib==0.2.4 --hash=sha256:0af07bd8ebd256af70ca925ada9337faf16d85b3072624f975136a5134150ab6
-raven==5.10.2 --hash=sha256:f17269486e9f64ccd5a38a859e8191a8d8f5609e8f0efee6f1881e8a0fb20ed8
+
+# Send tracebacks to Sentry instead of emailing admins
+raven==5.19.0 \
+    --hash=sha256:e45d249385fe5ff4090978b82fd0a2744a2c57947241af416e20d9c85d3a2ead \
+    --hash=sha256:cd952238e5a5ffcf0a626f4c2a1326a587b84e24e0e6bca36deef9c9b1c01933
+
 redis==2.10.5 --hash=sha256:97156b37d7cda4e7d8658be1148c983984e1a975090ba458cc7e244025191dbd
 requests==2.9.1 --hash=sha256:113fbba5531a9e34945b7d36b33a084e8ba5d0664b703c81a7c572d91919a5b8
 requests-mock==0.7.0 --hash=sha256:e61056cdb809fcc6ed47771b74054fe3ab4c3659d7f66c32a5256e8cf013e0af
