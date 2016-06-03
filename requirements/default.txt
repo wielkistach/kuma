@@ -26,7 +26,10 @@ Django==1.8.13 \
     --hash=sha256:dad5da0cd7f3cca7da3ac42a19abba30f5cc10fae4976e474051e7085b4e95d1 \
     --hash=sha256:128e8bdc11c69ea90f778435d38126453d3bf283dbd28cf15a33aa8e52245df4
 
-django-allauth==0.24.1 --hash=sha256:229a6a5a63ff55f9eb46d4dae3863ba775735bf60bfc16bf4e2042f214f18e1d
+# 3rd party logins like Github
+django-allauth==0.25.2 \
+    --hash=sha256:382632fc4e85d577bcb4a747dcd0fff0b4893fffe275922e8489855608f50252
+
 django-appconf==1.0.1 --hash=sha256:3d9bc963d8008ae151d6c664f9fd55442705ea9b9e6d7ce77cdd40bf92d91f3a
 django-cacheback==1.0 --hash=sha256:2fc21e0ed78ee8e4cc07ac2c5936b27f956c99c81fc4f965e96fb27171180819
 django-celery==3.1.17 --hash=sha256:254a95b0a4386df1fd949823942f6312c80fba3c88c5efad79cad8648bc5feb5
@@ -148,7 +151,6 @@ python-dateutil==2.4.2 --hash=sha256:2ae63cf475f0bd049b722fac20813d62aedc14957dd
 python-decouple==3.0 --hash=sha256:99834c9ff7ce5c5b2f4a18bc0880753e54ea3aaabc3cfb16961a92d5046665df
 python-magic==0.4.10 --hash=sha256:79fd2865ec96074749825f9e9562953995d5bf12b6793f24d75c37479ad4a2c3
 python-memcached==1.54 --hash=sha256:67e1c18b6b99ca4c2c8e4a02e0a96174bf7068919a5aff52836600974c1ef4d8
-python-openid==2.2.5 --hash=sha256:92c51c3ecec846cbec4aeff11f9ff47303d4a63f93b0e6ac0ec02a091fed70ef
 pytidylib==0.2.4 --hash=sha256:0af07bd8ebd256af70ca925ada9337faf16d85b3072624f975136a5134150ab6
 
 # Send tracebacks to Sentry instead of emailing admins
@@ -159,7 +161,6 @@ raven==5.19.0 \
 redis==2.10.5 --hash=sha256:97156b37d7cda4e7d8658be1148c983984e1a975090ba458cc7e244025191dbd
 requests==2.9.1 --hash=sha256:113fbba5531a9e34945b7d36b33a084e8ba5d0664b703c81a7c572d91919a5b8
 requests-mock==0.7.0 --hash=sha256:e61056cdb809fcc6ed47771b74054fe3ab4c3659d7f66c32a5256e8cf013e0af
-requests-oauthlib==0.6.1 --hash=sha256:7c708e8e2a4aa6a905cf91f28420d75db37270e0ec8fc951915c098dd8bde53e
 urllib3==1.14 --hash=sha256:ffe8859ca4fdfb021c2e8e0d3033f6c5eb372f8d4c3fd5455523055a2806a437
 URLObject==2.4.0 --hash=sha256:f51272b12846db98af530b0a64f6593d2b1e8405f0aa580285b37ce8009b8d9c
 Werkzeug==0.11.4 --hash=sha256:7db3cb2d4725be0680abf64a45b18229186f03ad8b9989abbe053f9357b17b37
