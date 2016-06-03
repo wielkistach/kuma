@@ -30,7 +30,6 @@ Django==1.8.13 \
 django-allauth==0.25.2 \
     --hash=sha256:382632fc4e85d577bcb4a747dcd0fff0b4893fffe275922e8489855608f50252
 
-django-appconf==1.0.1 --hash=sha256:3d9bc963d8008ae151d6c664f9fd55442705ea9b9e6d7ce77cdd40bf92d91f3a
 django-cacheback==1.0 --hash=sha256:2fc21e0ed78ee8e4cc07ac2c5936b27f956c99c81fc4f965e96fb27171180819
 django-celery==3.1.17 --hash=sha256:254a95b0a4386df1fd949823942f6312c80fba3c88c5efad79cad8648bc5feb5
 django-celery-transactions==0.3.6 --hash=sha256:cdf966ec461e9ec736a7bedcf47cb219fc79ea86f2b39191cb258082dd4f4b33
@@ -51,7 +50,11 @@ django-recaptcha==1.0.5 --hash=sha256:dc370fa0f7bd77378f8be5f03e88906bf0b62b8478
 djangorestframework==3.3.2 --hash=sha256:5634b1ff56581bf0fe4075e86227fc9693c1ca031c7213c9ae942c445c24817b
 django-smuggler==0.6.1 --hash=sha256:b3719c999a3c121006f5eb1d737be0c90d68a11a243a95f93341b366f049da10
 django-soapbox==1.3 --hash=sha256:69ccf5eb9200f294f400864c9f11990a8bdcd75ed8965cd984b7d6d3d243cf49
-django-statici18n==1.1.5 --hash=sha256:f8d7b523da8fa635de8c359f6dbde9821e2e8e1a092d915786455ffd2533808b
+
+# Generate localization catalogs for JavaScript
+django-statici18n==1.1.5 \
+    --hash=sha256:f8d7b523da8fa635de8c359f6dbde9821e2e8e1a092d915786455ffd2533808b
+
 django-sundial==1.0.2 --hash=sha256:3745891337d726041b37aed95005b9c70377116d232157726e48b46aefef1961
 django-taggit==0.18.0 --hash=sha256:4ddd61928a4fc6ba7ccb1145d8d3a6d5c2829de8d8738eea49924ade8969f0ce
 django-tidings==1.1 --hash=sha256:8bf9f1684568095cc0719c2eadd652bd3030f45e98ac0720f70c5a38a459125e

@@ -77,6 +77,11 @@ requests-oauthlib==0.6.1 \
 sqlparse==0.1.19 \
     --hash=sha256:d896be1a1c7f24bffe08d7a64e6f0176b260e281c5f3685afe7826f8bada4ee8
 
+# django-statici18n
+django-appconf==1.0.2 \
+    --hash=sha256:6a4d9aea683b4c224d97ab8ee11ad2d29a37072c0c6c509896dd9857466fb261 \
+    --hash=sha256:ddab987d14b26731352c01ee69c090a4ebfc9141ed223bef039d79587f22acd9
+
 # flake8
 mccabe==0.5.0 \
     --hash=sha256:6c1c06d7bb6bc24a85b11eabc8944c0f6a72e6f35f208d4796dcbb27dae75ee8 \
