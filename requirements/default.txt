@@ -34,8 +34,14 @@ django-allauth==0.25.2 \
 django-cacheback==1.1 \
     --hash=sha256:ba7dc1525de6b6f44d13f6e5b6b93ca7a9ef0ca560315872fe40f044b7b59e95
 
-django-celery==3.1.17 --hash=sha256:254a95b0a4386df1fd949823942f6312c80fba3c88c5efad79cad8648bc5feb5
-django-celery-transactions==0.3.6 --hash=sha256:cdf966ec461e9ec736a7bedcf47cb219fc79ea86f2b39191cb258082dd4f4b33
+# Integrate celery async tasks with Django (deprecated)
+django-celery==3.1.17 \
+    --hash=sha256:254a95b0a4386df1fd949823942f6312c80fba3c88c5efad79cad8648bc5feb5
+
+# Submit async tasks at the end of the Django transaction (deprecated)
+django-celery-transactions==0.3.6 \
+    --hash=sha256:cdf966ec461e9ec736a7bedcf47cb219fc79ea86f2b39191cb258082dd4f4b33
+
 django-constance==1.1.2 --hash=sha256:8edba68cf47befa2d2e6d9eba98ff74dc9881e086bfcac0337fe8198d5edffbf
 django-dbgettext==0.1.2 --hash=sha256:f5a115b2338a9d71a333a4b89cec14afbd8fd0180f98ff35a9c7f5d96ee969a8
 django-extensions==1.6.1 --hash=sha256:f98f991d2b039033ac5faa638c0d1afb2720abf4d9d781573c3592d6899480a1
