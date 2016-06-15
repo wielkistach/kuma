@@ -47,7 +47,10 @@ django-constance==1.2 \
     --hash=sha256:8dbd58f51d46de9215c4edd3dbcf054e0161b3bed9cdfb0b8602b97e3ab7de78 \
     --hash=sha256:71f77d78475b02ac8e06d00c59df3fe22c1b631a7098e0c65a728ec1673b00a2
 
-django-dbgettext==0.1.2 --hash=sha256:f5a115b2338a9d71a333a4b89cec14afbd8fd0180f98ff35a9c7f5d96ee969a8
+# Translate database content, used in filters
+django-dbgettext==0.1.2 \
+    --hash=sha256:f5a115b2338a9d71a333a4b89cec14afbd8fd0180f98ff35a9c7f5d96ee969a8
+
 django-extensions==1.6.1 --hash=sha256:f98f991d2b039033ac5faa638c0d1afb2720abf4d9d781573c3592d6899480a1
 django-flat-theme==1.1.3 --hash=sha256:323011c7eda4fb57604fd9feee568c5a789bff4c0c0892128f05246936e8013a
 django-honeypot==0.5.0 --hash=sha256:962304f21055f05c73c41f2506f5a94f5b941e831a203b68e54cb5016bdb8d5e
