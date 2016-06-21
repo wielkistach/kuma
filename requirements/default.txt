@@ -70,29 +70,92 @@ django-honeypot==0.5.0 \
 django-jinja==1.4.2 \
     --hash=sha256:6b8772f704b19fcf1c45351b332cce935229fed06b5c3f351fad319d569e8673
 
-django-localdevstorage==0.5 --hash=sha256:181939624a9dca244b0a72837a84baa1c4045ba47f3cd56632c21eb87298498d
-django-memcached-hashring==0.1.2 --hash=sha256:14c2dc29bc693feaf114dea8c871f4d25daca72bba8f37b159d552fed4ab6337
-django-mozilla-product-details==0.7.1 --hash=sha256:c50bffb9828a9139156904a11c508732d13dbf57ac25625ebc5edaa3ed312840
-django-mysql==1.0.4 --hash=sha256:0ced44721f0b36b618c7eb4c3813f57a5a7df71b959dc97ddf94e2281813a971
-django-picklefield==0.3.2 --hash=sha256:5489fef164de43725242d56e65e016137d3df0d1a00672bda72d807f5b2b0d99
-django-pipeline==1.5.4 --hash=sha256:a5a909f403d0ea56f211618949ff4e378f16e5a996bde819bd2b5b0e7a9bb8fe
-django-ratelimit==0.6.0 --hash=sha256:f73b53b2c4fd342cbd4b983ffc33fdcf8f8a6f595d548865ea63c839ef38293c
-django-recaptcha==1.0.5 --hash=sha256:dc370fa0f7bd77378f8be5f03e88906bf0b62b8478b35af05846f7d640f1ec32
-djangorestframework==3.3.2 --hash=sha256:5634b1ff56581bf0fe4075e86227fc9693c1ca031c7213c9ae942c445c24817b
-django-smuggler==0.6.1 --hash=sha256:b3719c999a3c121006f5eb1d737be0c90d68a11a243a95f93341b366f049da10
-django-soapbox==1.3 --hash=sha256:69ccf5eb9200f294f400864c9f11990a8bdcd75ed8965cd984b7d6d3d243cf49
+# Download media from production when developing locally
+django-localdevstorage==0.5 \
+    --hash=sha256:db1b2719dff305b91a117c9391887c5c391600acba6f2e41ecea5efee47d8e76 \
+    --hash=sha256:181939624a9dca244b0a72837a84baa1c4045ba47f3cd56632c21eb87298498d
+
+# Use consistent hashes despite adding or removing servers
+django-memcached-hashring==0.1.2 \
+    --hash=sha256:f71f99d60e704cc239bddbbe336dcdc5bb8a487b65a1b0b6c7ce0f4af5848442 \
+    --hash=sha256:14c2dc29bc693feaf114dea8c871f4d25daca72bba8f37b159d552fed4ab6337
+
+# Information about Mozilla products and supported locales
+django-mozilla-product-details==0.7.1 \
+    --hash=sha256:c50bffb9828a9139156904a11c508732d13dbf57ac25625ebc5edaa3ed312840
+
+# Allow Django to use MySQL-specific features
+django-mysql==1.0.4 \
+    --hash=sha256:a90eaaff1b9cfca374e565a873ba98b20209753e774ee136c526d1c4dd641561 \
+    --hash=sha256:0ced44721f0b36b618c7eb4c3813f57a5a7df71b959dc97ddf94e2281813a971
+
+# Serialize objects with Python's pickle
+# Required by django-constance with database backend
+django-picklefield==0.3.2 \
+    --hash=sha256:fab48a427c6310740755b242128f9300283bef159ffee42d3231a274c65d9ae2 \
+    --hash=sha256:5489fef164de43725242d56e65e016137d3df0d1a00672bda72d807f5b2b0d99
+
+# Asset packaging (CSS, JS concatenation and compression, etc.)
+django-pipeline==1.5.4 \
+    --hash=sha256:c711e88615ef37b2359ce30978eae7c65e54924aeb043229656c5e239065e596 \
+    --hash=sha256:a5a909f403d0ea56f211618949ff4e378f16e5a996bde819bd2b5b0e7a9bb8fe
+
+# Rate limit access to some views
+django-ratelimit==0.6.0 \
+    --hash=sha256:93dabcd3131a88d6fd19ff4de0a8351ed44b4ec943e8d58d27306f7faf8821af \
+    --hash=sha256:f73b53b2c4fd342cbd4b983ffc33fdcf8f8a6f595d548865ea63c839ef38293c
+
+# Use ReCaptcha in signup form
+django-recaptcha==1.0.5 \
+    --hash=sha256:dc370fa0f7bd77378f8be5f03e88906bf0b62b8478b35af05846f7d640f1ec32 \
+    --hash=sha256:d4d896dd399a1a0810af8e59a646bb5a1586b2cc8b8f32d16766ade5fba79475
+
+# RESTful API framework
+djangorestframework==3.3.2 \
+    --hash=sha256:5634b1ff56581bf0fe4075e86227fc9693c1ca031c7213c9ae942c445c24817b \
+    --hash=sha256:4962418a57804f8323282728a4f9b9496e78caec1adda352170697752eff01bf
+
+# Bulk download and upload of data with Django admin
+# TODO: remove this?
+django-smuggler==0.6.1 \
+    --hash=sha256:d062d3e8215b946679cfb893d8e8af7341ce2745ebe85077a49297418025f289 \
+    --hash=sha256:b3719c999a3c121006f5eb1d737be0c90d68a11a243a95f93341b366f049da10
+
+# Add site-wide announcements in the database
+django-soapbox==1.3 \
+    --hash=sha256:69ccf5eb9200f294f400864c9f11990a8bdcd75ed8965cd984b7d6d3d243cf49
 
 # Generate localization catalogs for JavaScript
 django-statici18n==1.1.5 \
     --hash=sha256:f8d7b523da8fa635de8c359f6dbde9821e2e8e1a092d915786455ffd2533808b
 
-django-sundial==1.0.2 --hash=sha256:3745891337d726041b37aed95005b9c70377116d232157726e48b46aefef1961
-django-taggit==0.18.0 --hash=sha256:4ddd61928a4fc6ba7ccb1145d8d3a6d5c2829de8d8738eea49924ade8969f0ce
-django-tidings==1.1 --hash=sha256:8bf9f1684568095cc0719c2eadd652bd3030f45e98ac0720f70c5a38a459125e
-django-timezones==0.2 --hash=sha256:5dd07ab1bec0eb8859f3d30ec1b293f7181dc01e60410f5740b9bb9d360473ec
-django-waffle==0.11 --hash=sha256:914b4b874fa6250a0897bc30b67e02034d92a7235ab72a91bf6da49b71751de4
-dj-database-url==0.4.0 --hash=sha256:858312abb7b330ea875733a65806a36ad04d7b8451c6ce8835118a2fa10d6870
-dj-email-url==0.0.4 --hash=sha256:c4a62a75499183cc645f060785760946dd422000dffbcaa264953b1abd6e5255
+# Better timezone picker for user profiles
+django-sundial==1.0.2 \
+    --hash=sha256:3362b59cca885f36741c6d7164a185ab6d23d057125dfaba70e3d419555c6b30 \
+    --hash=sha256:3745891337d726041b37aed95005b9c70377116d232157726e48b46aefef1961
+
+# Simple tagging support
+django-taggit==0.18.0 \
+    --hash=sha256:7010a1f7597d954aaf8b8174563f2e3455520db949d9c5d360dd9e4f906dd32a \
+    --hash=sha256:4ddd61928a4fc6ba7ccb1145d8d3a6d5c2829de8d8738eea49924ade8969f0ce
+
+# Send async emails in response to events
+django-tidings==1.1 \
+    --hash=sha256:d5047c39bf2e1d1d4dcdfd28371e3ab354ba6c26168ff11baac9d20409a804d9 \
+    --hash=sha256:8bf9f1684568095cc0719c2eadd652bd3030f45e98ac0720f70c5a38a459125e
+
+# Support segmented user experiences
+django-waffle==0.11 \
+    --hash=sha256:9cd9e3a976849a3cd816830d7811b93543c1dc9da9f3cb1ccc2f9da831b8b025 \
+    --hash=sha256:914b4b874fa6250a0897bc30b67e02034d92a7235ab72a91bf6da49b71751de4
+
+# Configure Django DATABASES setting from environment variable
+dj-database-url==0.4.0 \
+    --hash=sha256:858312abb7b330ea875733a65806a36ad04d7b8451c6ce8835118a2fa10d6870
+
+dj-email-url==0.0.4 \
+    --hash=sha256:319a8726d1a4755b78d17f9966e07a81184929817767051096f9669d329784c8 \
+    --hash=sha256:c4a62a75499183cc645f060785760946dd422000dffbcaa264953b1abd6e5255
 elasticsearch==1.9.0 --hash=sha256:cbee23c29f9947b1b78be5c0f741c1f8b504d3c53163b1355ea08f69cbd0fc0c
 elasticsearch-dsl==0.0.9 --hash=sha256:9b5404180d2747fa2e43c2e5cd78d39241cb80d041f492cccdd2a2e6272b0bda
 
@@ -103,9 +166,7 @@ feedparser==5.2.1 \
     --hash=sha256:cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c
 
 funcsigs==0.4 --hash=sha256:ff5ad9e2f8d9e5d1e8bbfbcf47722ab527cf0d51caeeed9da6d0f40799383fde
-futures==3.0.5 --hash=sha256:f7f16b6bf9653a918a03f1f2c2d62aac0cd64b1bc088e93ea279517f6b61120b
 gunicorn==19.4.5 --hash=sha256:c57f1b005a4b90933303c8deed9bedeb509331aa6a0a990023a5796e52bd8988
-hash-ring==1.3.1 --hash=sha256:f86b96517bc5cb7dbf34bbbc51cdd5968170877b43bc1ab7c9eb39345cff4dd7
 
 # String-based Python imports
 importlib==1.0.3 \
@@ -188,7 +249,6 @@ pyquery==1.2.13 \
 python-dateutil==2.4.2 --hash=sha256:2ae63cf475f0bd049b722fac20813d62aedc14957dd5a3bf00d120d2b5404460
 python-decouple==3.0 --hash=sha256:99834c9ff7ce5c5b2f4a18bc0880753e54ea3aaabc3cfb16961a92d5046665df
 python-magic==0.4.10 --hash=sha256:79fd2865ec96074749825f9e9562953995d5bf12b6793f24d75c37479ad4a2c3
-python-memcached==1.54 --hash=sha256:67e1c18b6b99ca4c2c8e4a02e0a96174bf7068919a5aff52836600974c1ef4d8
 pytidylib==0.2.4 --hash=sha256:0af07bd8ebd256af70ca925ada9337faf16d85b3072624f975136a5134150ab6
 
 # Send tracebacks to Sentry instead of emailing admins
