@@ -59,3 +59,8 @@ tox==2.3.1 \
 # Provides translation tools (podebug might be only one "used")
 translate-toolkit==2.0.0b2 \
     --hash=sha256:0114c29060d043527870cb84f4549854b9ca03b432100d43f29d9c21a0bc95fa
+
+# Enables ./manage.py runserver_plus with in-browser exception debugging
+Werkzeug==0.11.4 \
+    --hash=sha256:7db3cb2d4725be0680abf64a45b18229186f03ad8b9989abbe053f9357b17b37 \
+    --hash=sha256:e48fb7e3f2bb5a740dd9a666624699a4d83e2e028555f9c46bcc8ecfc2cd8c32
