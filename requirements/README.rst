@@ -1,7 +1,7 @@
 Kuma Requirements
 =================
 
-The files define the third-party libraries needed for running and developng
+The files define the third-party libraries needed for running and developing
 Kuma.  The files are:
 
 * ``constraints.txt`` - Requirements for our requirements
@@ -12,7 +12,7 @@ Kuma.  The files are:
 
 Hash-Checking Mode
 ------------------
-For the production and developement requirements, we use pip 8.x's
+For the production and development requirements, we use pip 8.x's
 `Hash-Checking Mode`_.  which checks that downloaded packages match one of the
 given hashes, ensuring that there are no shenanigans going on.  When hashes are
 used, all requirements, including those installed as dependencies, require
@@ -72,7 +72,7 @@ explaining why a requirement is used. For example::
 
 The purpose of the comment is:
 
-* Summarize the purpose of the requirment, to save an internet search
+* Summarize the purpose of the requirement, to save an internet search
 * Describe how the requirement is used in Kuma
 * Help maintainer to prioritize upgrading requirements
 * Give a hint on exploratory tests needed to ensure upgrades do not break things
