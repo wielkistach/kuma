@@ -72,6 +72,8 @@ python-openid==2.2.5 \
 requests-oauthlib==0.6.1 \
     --hash=sha256:905306080ec0cc6b3c65c8101f471fccfdb9994c16dd116524fd3fc0790d46d7 \
     --hash=sha256:7c708e8e2a4aa6a905cf91f28420d75db37270e0ec8fc951915c098dd8bde53e
+oauthlib==1.0.3 \
+    --hash=sha256:ef4bfe4663ca3b97a995860c0173b967ebd98033d02f38c9e1b2cbb6c191d9ad
 
 # django-debug-toolbar
 sqlparse==0.1.19 \
