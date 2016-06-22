@@ -180,6 +180,14 @@ msgpack-python==0.4.7 \
     --hash=sha256:cf8d257f830922682fce7ae545b8a4bdb11695897a40044f9f69aea257ceefcb \
     --hash=sha256:a952a3064853cddc38e21349b87d3f825c7a759307e46dfd75e0834165da689d
 
+# mock
+funcsigs==0.4 \
+    --hash=sha256:ff5ad9e2f8d9e5d1e8bbfbcf47722ab527cf0d51caeeed9da6d0f40799383fde \
+    --hash=sha256:d83ce6df0b0ea6618700fe1db353526391a8a3ada1b7aba52fed7a61da772033
+pbr==1.8.1 \
+    --hash=sha256:46c8db75ae75a056bd1cc07fa21734fe2e603d11a07833ecc1eeb74c35c72e0c \
+    --hash=sha256:e2127626a91e6c885db89668976db31020f0af2da728924b56480fc7ccf09649
+
 # ndg-httpsclient
 pyOpenSSL==0.15.1 \
     --hash=sha256:88e45e6bb25dfed272a1ef2e728461d44b634c2cd689e989b6e56a349c5a3ae5 \
