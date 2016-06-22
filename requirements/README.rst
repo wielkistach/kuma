@@ -13,12 +13,12 @@ Kuma.  The files are:
 Hash-Checking Mode
 ------------------
 For the production and development requirements, we use pip 8.x's
-`Hash-Checking Mode`_.  which checks that downloaded packages match one of the
-given hashes, ensuring that there are no shenanigans going on.  When hashes are
-used, all requirements, including those installed as dependencies, require
-hashes.
+`Hash-Checking Mode`_, which checks that downloaded packages match one of the
+given hashes, ensuring that there are no man-in-the-middle attacks.  When
+hashes are used, all requirements, including those installed as dependencies,
+require hashes.
 
-To help gather packages and add hashes, we use hashin_ , which computes the
+To help gather packages and add hashes, we use hashin_, which computes the
 hashes and updates requirement files. For example, to install a particular
 Django version::
 
