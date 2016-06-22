@@ -95,6 +95,11 @@ futures==3.0.5 \
     --hash=sha256:f7f16b6bf9653a918a03f1f2c2d62aac0cd64b1bc088e93ea279517f6b61120b \
     --hash=sha256:0542525145d5afc984c88f914a0c85c77527f65946617edb5274f72406f981df
 
+# elasticsearch-dsl
+elasticsearch==1.9.0 \
+    --hash=sha256:cbee23c29f9947b1b78be5c0f741c1f8b504d3c53163b1355ea08f69cbd0fc0c \
+    --hash=sha256:eb0d4b5b20a4ccf9e49bd20498b6215d5e960d8a63a0eae44cd4431e3f303a24
+
 # flake8
 mccabe==0.5.0 \
     --hash=sha256:6c1c06d7bb6bc24a85b11eabc8944c0f6a72e6f35f208d4796dcbb27dae75ee8 \

@@ -149,15 +149,19 @@ django-waffle==0.11 \
     --hash=sha256:9cd9e3a976849a3cd816830d7811b93543c1dc9da9f3cb1ccc2f9da831b8b025 \
     --hash=sha256:914b4b874fa6250a0897bc30b67e02034d92a7235ab72a91bf6da49b71751de4
 
-# Configure Django DATABASES setting from environment variable
+# Configure Django DATABASES settings from environment variable
 dj-database-url==0.4.0 \
     --hash=sha256:858312abb7b330ea875733a65806a36ad04d7b8451c6ce8835118a2fa10d6870
 
+# Configure email addresses from environment variables
 dj-email-url==0.0.4 \
     --hash=sha256:319a8726d1a4755b78d17f9966e07a81184929817767051096f9669d329784c8 \
     --hash=sha256:c4a62a75499183cc645f060785760946dd422000dffbcaa264953b1abd6e5255
-elasticsearch==1.9.0 --hash=sha256:cbee23c29f9947b1b78be5c0f741c1f8b504d3c53163b1355ea08f69cbd0fc0c
-elasticsearch-dsl==0.0.9 --hash=sha256:9b5404180d2747fa2e43c2e5cd78d39241cb80d041f492cccdd2a2e6272b0bda
+
+# Index and search MDN content
+elasticsearch-dsl==0.0.9 \
+    --hash=sha256:72c108f794a79b154c32cf594a1185459338d6aaec337051f03b2034a16eacbd \
+    --hash=sha256:9b5404180d2747fa2e43c2e5cd78d39241cb80d041f492cccdd2a2e6272b0bda
 
 # Parse external RSS / Atom feeds
 feedparser==5.2.1 \
