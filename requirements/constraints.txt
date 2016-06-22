@@ -26,7 +26,7 @@ pytz==2016.4 \
     --hash=sha256:ee7c751544e35a7b7fb5e3fb25a49dade37d51e70a93e5107f10575d7102c311 \
     --hash=sha256:c823de61ff40d1996fe087cec343e0503881ca641b897e0f9b86c7683a0bfee1 \
     --hash=sha256:be2ff04e94a2b5454ddcfbebb81ee8e46162734d4c2fcc90c422d16ab51f810b
-# cryptography, django-honeypot, logilab-common
+# cryptography, django-honeypot
 setuptools==22.0.0 \
     --hash=sha256:e2ca74d691e1797139483c4a77d7e4ee8e4722dc94b13022ae322782f0c1a4fe \
     --hash=sha256:1324ed0b1b4929fe49c347909624dbf53989555a033419f3d45ceff4c0acd6f3 \
