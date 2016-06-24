@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% set title = _('Spam Moderators Dashboard') %}
+
+{% block title %}{{ page_title(title) }}{% endblock %}
+
+{% block content %}
+
+    <div class="dashboard">
+        <h1>{{ title }}</h1>
+        <h2>{{ _('Summary') }}</h2>
+          {% if summary.total %}
+            <p>
+                {{ ngettext('Yesterday there were:',
+                           'Over the past %(num)s days, there were:',
+                           summary.days) }}
+                <ul>
+                    <li>
+                        {{- ngettext('%(num)s attempted edit',
+                                     '%(num)s attempted edits',
+                                     summary.total) -}}
+                    </li>
+                    <li>
+                        {{- ngettext('%(num)s good contribution',
+                                     '%(num)s good contributions',
+                                     summary.published_ham) -}}
+                    </li>
+                    <li>
+                        {{- ngettext('%(num)s blocked spam edit (%(rate)0.1f%% of all edits)',
+                                     '%(num)s blocked spam edits (%(rate)0.1f%% of all edits)',
+                                     summary.blocked_spam,
+                                     rate=100 * summary.blocked_spam / summary.total) -}}
+                    </li>
+                    <li>
+                        {{- ngettext('%(num)s blocked ham edit (%(rate)0.1f%% false positive rate)',
+                                     '%(num)s blocked ham edits (%(rate)0.1f%% false positive rate)',
+                                     summary.blocked_ham,
+                                     rate=100 * summary.blocked_ham / summary.total) -}}
+                    </li>
+                    <li>
+                        {{- ngettext('%(num)s published spam edit (%(rate)0.1f%% false negative rate)',
+                                     '%(num)s published spam edits (%(rate)0.1f%% false negative rate)',
+                                     summary.published_spam,
+                                     rate=100 * summary.published_spam / summary.total) -}}
+                    </li>
+                </ul>
+            </p>
+          {% else %}
+            <p>
+                {{ ngettext('There were no edits yesterday.',
+                            'There were no edits in the past %(num)s days.',
+                            summary.days) }}
+            </p>
+          {% endif %}
+        <h2>Trends</h2>
+        <h3>Over Time</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan=2 class="col-period head-period">{{ _('Period') }}</th>
+                        <th rowspan=2 class="col-period head-period">{{ _('Days') }}</th>
+                        <th colspan=9 class="col-group-this-period">{{ _('This Period') }}</th>
+                        <th colspan=9 class="col-group-last-period">{{ _('Last Period') }}</th>
+                    </tr>
+                    <tr>
+                        {% for group in ('current', 'previous') -%}
+                        <th class="col-start">{{ _('Start') }}</th>
+                        <th class="col-end">{{ _('End') }}</th>
+                        <th class="col-total">{{ _('Total Edits') }}</th>
+                        <th colspan=2 class="col-blocked-spam">{{ _('Blocked Spam') }}</th>
+                        <th colspan=2 class="col-published-spam">{{ _('Published Spam') }}</th>
+                        <th colspan=2 class="col-blocked-ham">{{ _('Blocked Ham') }}</th>
+                        {%- endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in trends.over_time -%}
+                    <tr>
+                        <th scope="row" class="col-period">{{ row.name }}</th>
+                        <td>{{ row.days }}</td>
+                        {% for group in ('current', 'previous') %}
+                        {% set group_total=row[group].total %}
+                        {% set group_blocked_spam=row[group].blocked_spam %}
+                        {% set group_published_spam=row[group].published_spam %}
+                        {% set group_blocked_ham=row[group].blocked_ham %}
+                        <td class="date col-start">{{ row[group].start }}</td>
+                        <td class="date col-end">{{ row[group].end }}</td>
+                        <td class="data col-total">{{ group_total }}</td>
+                        <td class="data col-blocked-spam">{{ group_blocked_spam }}</td>
+                        <td class="rate col-blocked-spam">
+                            {%- if group_total -%}
+                                {{ "%0.1f%%" | format(100 * group_blocked_spam / group_total) }}
+                            {%- else -%}
+                                0.0%
+                            {%- endif -%}
+                        </td>
+                        <td class="data col-published-spam">{{ row[group].published_spam }}</td>
+                        <td class="rate col-published-spam">
+                            {%- if group_total -%}
+                                {{ "%0.1f%%" | format(100 * group_published_spam / group_total) }}
+                            {%- else -%}
+                                0.0%
+                            {%- endif -%}
+                        </td>
+                        <td class="data col-blocked-ham">{{ row[group].blocked_ham }}</td>
+                        <td class="rate col-blocked-ham">
+                            {%- if group_total -%}
+                                {{ "%0.1f%%" | format(100 * group_blocked_ham / group_total) }}
+                            {%- else -%}
+                                0.0%
+                            {%- endif -%}
+                        </td>
+                        {%- endfor %}
+                    </tr>
+                    {%- endfor %}
+                </tbody>
+            </table>
+        <h3>Edit Types</h3>
+
+        <h2>Events</h2>
+    </div>
+
+<pre>
+{{ data }}
+</pre>
+
+{% endblock %}
