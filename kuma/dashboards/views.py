@@ -18,8 +18,11 @@ from kuma.wiki.models import (Document,
                               DocumentSpamAttempt,
                               Revision,
                               RevisionAkismetSubmission)
+from kuma.users.models import User
 
+from .constants import KNOWN_AUTHORS_GROUP
 from .forms import RevisionDashboardForm
+from .utils import spam_dashboard_stats
 from . import PAGE_SIZE
 
 
@@ -85,7 +88,8 @@ def revisions(request):
            authors_filter not in ['', str(RevisionDashboardForm.ALL_AUTHORS)]):
 
             # The 'Known Authors' group
-            group, created = Group.objects.get_or_create(name="Known Authors")
+            group, created = (
+                Group.objects.get_or_create(name=KNOWN_AUTHORS_GROUP))
             # If the filter is 'Known Authors', then query for the
             # 'Known Authors' group
             if authors_filter == str(RevisionDashboardForm.KNOWN_AUTHORS):
@@ -156,128 +160,6 @@ def topic_lookup(request):
                         content_type='application/json; charset=utf-8')
 
 
-spam_periods = [
-    (1, _('Daily')),
-    (7, _('Weekly')),
-    (30, _('Monthly')),
-    (90, _('Quarterly')),
-]
-
-
-def spam_stats(periods, summary=90):
-    """
-    Generate spam statistics for the given periods.
-
-    Keywords Arguments:
-    * periods - a sequence of (days, name) tuples
-    * summary - the number of days in the summary period
-    """
-    assert periods, 'Must define at least one period'
-    period_names = dict(periods)
-    assert summary in period_names, 'Summary period is not in periods'
-
-    # Determine the dates for the given periods
-    newest = datetime.date.today() - datetime.timedelta(days=1)
-    oldest = newest
-    spans = []
-    for length, name in periods:
-        start = datetime.date.today() - datetime.timedelta(days=1)
-        mid = start - datetime.timedelta(days=length)
-        end = mid - datetime.timedelta(days=length)
-        oldest = min(end, oldest)
-        spans.append((length, start, mid, end))
-
-    # Gather published revisions by span
-    published = Counter()
-    published_revisions = (
-        Revision.objects
-        .filter(created__range=(oldest, newest))
-        .values_list('created', flat=True))
-    for created in published_revisions:
-        day = created.date()
-        for length, start, mid, end in spans:
-            if day > start or day <= end:
-                continue  # Not in this span
-            current = day > mid
-            key = (length, current)
-            published[key] += 1
-
-    # Gather published spam by span
-    published_spam = Counter()
-    akismet_spam = (
-        RevisionAkismetSubmission.objects
-        .filter(revision__created__range=(oldest, newest))
-        .filter(type=RevisionAkismetSubmission.SPAM_TYPE)
-        .values_list('revision__created', flat=True))
-    for created in akismet_spam:
-        day = created.date()
-        for length, start, mid, end in spans:
-            if day > start or day <= end:
-                continue  # Not in this span
-            current = day > mid
-            key = (length, current)
-            published_spam[key] += 1
-
-    # Gather blocked ham and spam
-    blocked_ham = Counter()
-    blocked_spam = Counter()
-    blocked_content = (
-        DocumentSpamAttempt.objects
-        .filter(created__range=(oldest, newest))
-        .filter(review__in=(DocumentSpamAttempt.HAM,
-                            DocumentSpamAttempt.SPAM))
-        .values_list('created', 'review'))
-    for created, review in blocked_content:
-        day = created.date()
-        for length, start, mid, end in spans:
-            if day > start or day <= end:
-                continue  # Not in this span
-            current = day > mid
-            key = (length, current)
-            if review == DocumentSpamAttempt.HAM:
-                blocked_ham[key] += 1
-            else:
-                blocked_spam[key] += 1
-
-    # Collect data into trends
-    data = {'trends': {'over_time': []}}
-    summary_period = None
-    for length, start, mid, end in spans:
-        period_data = {
-            'name': period_names[length],
-            'days': length,
-            'current': {
-                'start': (mid + datetime.timedelta(days=1)).isoformat(),
-                'end': start.isoformat(),
-            },
-            'previous': {
-                'start': mid.isoformat(),
-                'end': (end + datetime.timedelta(days=1)).isoformat(),
-            }
-        }
-        for group in ('current', 'previous'):
-            current = group == 'current'
-            key = (length, current)
-            gdict = period_data[group]
-            gdict['published'] = published[key]
-            gdict['blocked_ham'] = blocked_ham[key]
-            gdict['blocked_spam'] = blocked_spam[key]
-            gdict['published_spam'] = published_spam[key]
-            gdict['blocked'] = gdict['blocked_ham'] + gdict['blocked_spam']
-            gdict['published_ham'] = (
-                gdict['published'] - gdict['published_spam'])
-            gdict['total'] = gdict['published'] + gdict['blocked']
-        if length == summary:
-            summary_period = period_data
-        data['trends']['over_time'].append(period_data)
-
-    # Get summary from trends
-    data['summary'] = {'days': summary_period['days']}
-    data['summary'].update(summary_period['current'])
-
-    return data
-
-
 @require_GET
 @login_required
 @permission_required((
@@ -287,57 +169,5 @@ def spam_stats(periods, summary=90):
 def spam(request):
     """Dashboard for spam moderators."""
 
-    data = spam_stats(spam_periods)
-    '''
-    old_data = {
-        'summary': {
-            'days': 90,
-            'total': 1000,
-            'published': 993,
-            'blocked': 7,
-            'published_ham': 990,
-            'published_spam': 3,
-            'blocked_ham': 4,
-            'blocked_spam': 3,
-        },
-        'trends': {
-            'over_time': [
-                {
-                    'name': _('Daily'),
-                    'days': 1,
-                    'current': {
-                        'start': datetime.date.today() - datetime.timedelta(days=1),
-                        'end': datetime.date.today() - datetime.timedelta(days=1),
-                    },
-                    'previous': {
-                        'start': datetime.date.today() - datetime.timedelta(days=2),
-                        'end': datetime.date.today() - datetime.timedelta(days=2),
-                    },
-                },
-                {
-                    'name': _('Weekly'),
-                    'days': 7,
-                    'current': {},
-                    'previous': {},
-                },
-                {
-                    'name': _('Monthly'),
-                    'days': 30,
-                    'current': {},
-                    'previous': {},
-                },
-                {
-                    'name': _('Quarterly'),
-                    'days': 90,
-                    'current': {},
-                    'previous': {},
-                },
-            ],
-            'edit_type': [
-
-            ],
-        },
-    }
-    '''
-
+    data = spam_dashboard_stats()
     return render(request, 'dashboards/spam.html', data)

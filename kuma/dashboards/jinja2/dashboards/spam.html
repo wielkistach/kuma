@@ -28,19 +28,19 @@
                         {{- ngettext('%(num)s blocked spam edit (%(rate)0.1f%% of all edits)',
                                      '%(num)s blocked spam edits (%(rate)0.1f%% of all edits)',
                                      summary.blocked_spam,
-                                     rate=100 * summary.blocked_spam / summary.total) -}}
+                                     rate=(100 * summary.blocked_spam_rate)) -}}
                     </li>
                     <li>
                         {{- ngettext('%(num)s blocked ham edit (%(rate)0.1f%% false positive rate)',
                                      '%(num)s blocked ham edits (%(rate)0.1f%% false positive rate)',
                                      summary.blocked_ham,
-                                     rate=100 * summary.blocked_ham / summary.total) -}}
+                                     rate=(100 * summary.blocked_ham_rate)) -}}
                     </li>
                     <li>
                         {{- ngettext('%(num)s published spam edit (%(rate)0.1f%% false negative rate)',
                                      '%(num)s published spam edits (%(rate)0.1f%% false negative rate)',
                                      summary.published_spam,
-                                     rate=100 * summary.published_spam / summary.total) -}}
+                                     rate=(100 * summary.published_spam_rate)) -}}
                     </li>
                 </ul>
             </p>
@@ -51,8 +51,8 @@
                             summary.days) }}
             </p>
           {% endif %}
-        <h2>Trends</h2>
-        <h3>Over Time</h3>
+        <h2>{{ _('Trends') }}</h2>
+        <h3>{{ _('Over Time') }}</h3>
             <table>
                 <thead>
                     <tr>
@@ -78,49 +78,57 @@
                         <th scope="row" class="col-period">{{ row.name }}</th>
                         <td>{{ row.days }}</td>
                         {% for group in ('current', 'previous') %}
-                        {% set group_total=row[group].total %}
-                        {% set group_blocked_spam=row[group].blocked_spam %}
-                        {% set group_published_spam=row[group].published_spam %}
-                        {% set group_blocked_ham=row[group].blocked_ham %}
                         <td class="date col-start">{{ row[group].start }}</td>
                         <td class="date col-end">{{ row[group].end }}</td>
-                        <td class="data col-total">{{ group_total }}</td>
-                        <td class="data col-blocked-spam">{{ group_blocked_spam }}</td>
+                        <td class="data col-total">{{ row[group].total }}</td>
+                        <td class="data col-blocked-spam">{{ row[group].blocked_spam }}</td>
                         <td class="rate col-blocked-spam">
-                            {%- if group_total -%}
-                                {{ "%0.1f%%" | format(100 * group_blocked_spam / group_total) }}
-                            {%- else -%}
-                                0.0%
-                            {%- endif -%}
+                            {{- "%0.1f%%" | format(100 * row[group].blocked_spam_rate) -}}
                         </td>
                         <td class="data col-published-spam">{{ row[group].published_spam }}</td>
                         <td class="rate col-published-spam">
-                            {%- if group_total -%}
-                                {{ "%0.1f%%" | format(100 * group_published_spam / group_total) }}
-                            {%- else -%}
-                                0.0%
-                            {%- endif -%}
+                            {{- "%0.1f%%" | format(100 * row[group].published_spam_rate) -}}
                         </td>
                         <td class="data col-blocked-ham">{{ row[group].blocked_ham }}</td>
                         <td class="rate col-blocked-ham">
-                            {%- if group_total -%}
-                                {{ "%0.1f%%" | format(100 * group_blocked_ham / group_total) }}
-                            {%- else -%}
-                                0.0%
-                            {%- endif -%}
+                            {{- "%0.1f%%" | format(100 * row[group].blocked_ham_rate) -}}
                         </td>
                         {%- endfor %}
                     </tr>
                     {%- endfor %}
                 </tbody>
             </table>
-        <h3>Edit Types</h3>
+        <h3>{{ _("By Edit Type") }}</h3>
+            <p><em>to do: Add table of statistics by edit type (new page, edit, new translation)</em></p>
+        <h3>{{ _("By Group") }}</h3>
+            <p><em>to do: Add table of statistics by group (staff, known authors, other)</em></p>
+        <h2>{{ _("Events") }}</h2>
+        <h3>{{ _("Recent Published Spam") }}</h3>
+            <p><em>to do: Show 20 most recent published spam, how long visible</em></p>
+        <h3>{{ _("Recent Blocked Edits") }}</h3>
+            <p><em>to do: Show 20 most recent blocked edits, review, reviewer</em></p>
 
-        <h2>Events</h2>
+        <div style="display:none">
+        <h2>Raw</h2>
+            <table>
+                <thead>
+                    <tr>
+                        {% for column_id, column_name in raw.columns %}
+                        <th class="col-{{ column | replace('_', '-') }}">{{ column_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data_row in raw.data %}
+                    <tr>
+                        {% for item in data_row %}
+                        <td><code>{{ item }}</code></td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-
-<pre>
-{{ data }}
-</pre>
 
 {% endblock %}
