@@ -4,7 +4,6 @@ import datetime
 import json
 
 from django.contrib.auth.models import Group
-from django.utils.translation import ugettext_lazy as _
 
 from kuma.users.models import User
 from kuma.wiki.models import DocumentSpamAttempt, Revision
@@ -195,8 +194,6 @@ def spam_dashboard_stats(
     end_date - The ending anchor date for the statistics
     derived_stats - a sequence of derived stats definitions
     summary - the period to use for the summary (last if omitted)
-
-    TODO: split out translated strings, for better caching
     """
     from .jobs import SpamDayStatsJob
 
@@ -206,33 +203,30 @@ def spam_dashboard_stats(
     summary = summary or periods[-1][0]
 
     assert periods, 'Must define at least one period'
-    period_names = dict(periods)
-    assert summary in period_names, "Invalid summary period"
+    assert summary in [per[0] for per in periods], "Invalid summary period"
 
     # Determine the dates for the given periods
     newest = end_date
     oldest = newest
     spans = []
-    for length, name in periods:
+    for length, period_id in periods:
         end = end_date
         mid = end - datetime.timedelta(days=length)
         start = mid - datetime.timedelta(days=length)
         oldest = min(start, oldest)
-        spans.append((length, end, mid, start))
+        spans.append((length, period_id, end, mid, start))
 
     # Gather columns
     category_options = [opts for category, opts in SPAM_STAT_CATEGORY_OPTIONS]
     raw_columns = []
     for parts in product(*category_options):
         key = '_'.join(parts)
-        raw_columns.append((key, key))
+        raw_columns.append(key)
     derived_columns = []
     for stat_def in derived_stats:
-        derived_columns.append((stat_def['id'], stat_def['name']))
+        derived_columns.append(stat_def['id'])
         if stat_def.get('rate_denominiator'):
-            assert stat_def.get('rate_name'), 'rate_name undefined'
-            derived_columns.append((stat_def['id'] + SPAM_RATE_ID_SUFFIX,
-                                    stat_def['rate_name']))
+            derived_columns.append(stat_def['id'] + SPAM_RATE_ID_SUFFIX)
     columns = derived_columns + raw_columns
 
     # Iterate over daily stats across the periods
@@ -245,8 +239,8 @@ def spam_dashboard_stats(
 
         # Create 0 records for missing raw events
         day_events = dict()
-        for key, name in raw_columns:
-            day_events[key] = raw_events.get(key, 0)
+        for column_id in raw_columns:
+            day_events[column_id] = raw_events.get(column_id, 0)
 
         # Calculated derived statistics
         for stat_def in derived_stats:
@@ -265,11 +259,11 @@ def spam_dashboard_stats(
         events.append((day, day_events))
 
         # Accumulate trends over periods
-        for length, end, mid, start in spans:
+        for length, period_id, end, mid, start in spans:
             if end >= day > start:
                 current = day > mid
                 trend_key = (length, current)
-                for column_id, column_name in columns:
+                for column_id in columns:
                     if not column_id.endswith(SPAM_RATE_ID_SUFFIX):
                         stat = day_events[column_id]
                         trends[trend_key][column_id] += stat
@@ -280,9 +274,9 @@ def spam_dashboard_stats(
     # Assemble output data
     data = {'trends': {'over_time': []}}
     summary_period = None
-    for length, end, mid, start in spans:
+    for length, period_id, end, mid, start in spans:
         period_data = {
-            'name': period_names[length],
+            'id': period_id,
             'days': length,
             'current': {
                 'start': (mid + datetime.timedelta(days=1)).isoformat(),
@@ -319,12 +313,12 @@ def spam_dashboard_stats(
 
     # Add raw data
     data['raw'] = {
-        'columns': [('date', _('Date'))] + columns,
+        'columns': ['date'] + columns,
         'data': []
     }
     for day, metrics in events:
         row = [day.isoformat()]
-        for column_id, column_name in columns:
+        for column_id in columns:
             raw = metrics.get(column_id, 0)
             if column_id.endswith(SPAM_RATE_ID_SUFFIX):
                 raw = "%0.02f%%" % (100.0 * raw)

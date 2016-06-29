@@ -20,7 +20,7 @@ from kuma.wiki.models import (Document,
                               RevisionAkismetSubmission)
 from kuma.users.models import User
 
-from .constants import KNOWN_AUTHORS_GROUP
+from .constants import KNOWN_AUTHORS_GROUP, SPAM_DASHBOARD_NAMES
 from .forms import RevisionDashboardForm
 from .utils import spam_dashboard_stats
 from . import PAGE_SIZE
@@ -170,4 +170,5 @@ def spam(request):
     """Dashboard for spam moderators."""
 
     data = spam_dashboard_stats()
+    data['names'] = SPAM_DASHBOARD_NAMES
     return render(request, 'dashboards/spam.html', data)

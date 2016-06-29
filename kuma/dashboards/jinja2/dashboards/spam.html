@@ -57,7 +57,6 @@
                 <thead>
                     <tr>
                         <th rowspan=2 class="col-period head-period">{{ _('Period') }}</th>
-                        <th rowspan=2 class="col-period head-period">{{ _('Days') }}</th>
                         <th colspan=9 class="col-group-this-period">{{ _('This Period') }}</th>
                         <th colspan=9 class="col-group-last-period">{{ _('Last Period') }}</th>
                     </tr>
@@ -75,24 +74,17 @@
                 <tbody>
                     {% for row in trends.over_time -%}
                     <tr>
-                        <th scope="row" class="col-period">{{ row.name }}</th>
-                        <td>{{ row.days }}</td>
+                        <th scope="row" class="col-period">{{ names[row.id] | default(row.id) }}</th>
                         {% for group in ('current', 'previous') %}
                         <td class="date col-start">{{ row[group].start }}</td>
                         <td class="date col-end">{{ row[group].end }}</td>
                         <td class="data col-total">{{ row[group].total }}</td>
                         <td class="data col-blocked-spam">{{ row[group].blocked_spam }}</td>
-                        <td class="rate col-blocked-spam">
-                            {{- "%0.1f%%" | format(100 * row[group].blocked_spam_rate) -}}
-                        </td>
+                        <td class="rate col-blocked-spam">{{ "%0.1f%%" | format(100 * row[group].blocked_spam_rate) }} </td>
                         <td class="data col-published-spam">{{ row[group].published_spam }}</td>
-                        <td class="rate col-published-spam">
-                            {{- "%0.1f%%" | format(100 * row[group].published_spam_rate) -}}
-                        </td>
+                        <td class="rate col-published-spam">{{ "%0.1f%%" | format(100 * row[group].published_spam_rate) }}</td>
                         <td class="data col-blocked-ham">{{ row[group].blocked_ham }}</td>
-                        <td class="rate col-blocked-ham">
-                            {{- "%0.1f%%" | format(100 * row[group].blocked_ham_rate) -}}
-                        </td>
+                        <td class="rate col-blocked-ham">{{ "%0.1f%%" | format(100 * row[group].blocked_ham_rate) }}</td>
                         {%- endfor %}
                     </tr>
                     {%- endfor %}
@@ -113,8 +105,8 @@
             <table>
                 <thead>
                     <tr>
-                        {% for column_id, column_name in raw.columns %}
-                        <th class="col-{{ column | replace('_', '-') }}">{{ column_name }}</th>
+                        {% for column_id in raw.columns %}
+                        <th class="col-{{ column | replace('_', '-') }}">{{ names[column_id] | default(column_id) }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -130,5 +122,6 @@
             </table>
         </div>
     </div>
+    <p><em>to do: show generation time</em></p>
 
 {% endblock %}
