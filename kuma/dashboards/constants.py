@@ -21,7 +21,7 @@ SPAM_STAT_CATEGORIES = set(name for name, opts in SPAM_STAT_CATEGORY_OPTIONS)
 SPAM_DASHBOARD_DERIVED_STATS = [
     {
         'id': 'total',
-        'derived': {}
+        'derived': {},
     }, {
         'id': 'published_ham',
         'derived': {'content': 'ham', 'published': 'published'},
@@ -57,4 +57,13 @@ SPAM_DASHBOARD_NAMES = {
     'blocked_spam_rate': _('Blocked Spam Rate'),
     'published_spam_rate': _('Published Spam Rate'),
     'blocked_ham_rate': _('Blocked Ham Rate'),
+    # Groups
+    'group_staff': _('MDN Staff'),
+    'group_known': _('Known Authors'),
+    'group_other': _('Other Users'),
+    # Change types
+    'changetype_new': _('New Page'),
+    'changetype_edit': _('Page Edit'),
+    'changetype_newtrans': _('New Translation'),
+    'changetype_edittrans': _('Translation Update'),
 }

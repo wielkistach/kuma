@@ -90,7 +90,7 @@ def spam_day_stats(day):
             document_data[rev.document_id] = (first_rev, doc_lang)
         first_rev, doc_lang = document_data[rev.document_id]
 
-        # Was it a new pfresh?
+        # Was it a new page?
         if first_rev == rev:
             fresh = 'new'
         else:
@@ -123,7 +123,7 @@ def spam_day_stats(day):
                 needs_review = True
             continue
 
-        # Is it a edit? What langufresh?
+        # Is it a edit? What language?
         if blocked.document_id:
             fresh = 'edit'
             if blocked.document.parent_id:
@@ -187,7 +187,7 @@ def spam_derived_stat(events, **categories):
 
 def spam_dashboard_stats(
         periods=None, end_date=None, derived_stats=None, summary=None):
-    """Gather spam statistics for a range of dates.
+    """Gather spam statistics for a range of dates, with derived stats.
 
     Keywords Arguments:
     periods - a sequence of (days, name) tuples
@@ -225,7 +225,8 @@ def spam_dashboard_stats(
     derived_columns = []
     for stat_def in derived_stats:
         derived_columns.append(stat_def['id'])
-        if stat_def.get('rate_denominiator'):
+        rate_denominiator = stat_def.get('rate_denominiator')
+        if rate_denominiator:
             derived_columns.append(stat_def['id'] + SPAM_RATE_ID_SUFFIX)
     columns = derived_columns + raw_columns
 
@@ -246,6 +247,8 @@ def spam_dashboard_stats(
         for stat_def in derived_stats:
             derived = spam_derived_stat(day_events, **stat_def['derived'])
             day_events[stat_def['id']] = derived
+
+            # Calculate derived rate
             rate_denominiator = stat_def.get('rate_denominiator')
             if rate_denominiator:
                 denom = day_events[rate_denominiator]
@@ -271,8 +274,37 @@ def spam_dashboard_stats(
         # Continue with one day back in history
         day -= datetime.timedelta(days=1)
 
-    # Assemble output data
-    data = {'trends': {'over_time': []}}
+    # Prepare output data
+    data = {
+        'version': 1,
+        'generated': datetime.datetime.now().isoformat(),
+        'day': end_date.isoformat(),
+        'categories': dict(SPAM_STAT_CATEGORY_OPTIONS),
+        'change_types': [
+            {
+                'id': 'changetype_new',
+                'fresh': 'new',
+                'lang': 'en',
+            }, {
+                'id': 'changetype_edit',
+                'fresh': 'edit',
+                'lang': 'en',
+            }, {
+                'id': 'changetype_newtrans',
+                'fresh': 'new',
+                'lang': 'other',
+            }, {
+                'id': 'changetype_edittrans',
+                'fresh': 'edit',
+                'lang': 'other',
+            }
+        ],
+        'trends': {
+            'over_time': []
+        },
+    }
+
+    # Collect trends over time
     summary_period = None
     for length, period_id, end, mid, start in spans:
         period_data = {
@@ -280,11 +312,11 @@ def spam_dashboard_stats(
             'days': length,
             'current': {
                 'start': (mid + datetime.timedelta(days=1)).isoformat(),
-                'end': start.isoformat(),
+                'end': end.isoformat(),
             },
             'previous': {
-                'start': mid.isoformat(),
-                'end': (end + datetime.timedelta(days=1)).isoformat(),
+                'start': (start + datetime.timedelta(days=1)).isoformat(),
+                'end': mid.isoformat(),
             }
         }
         for group in ('current', 'previous'):
