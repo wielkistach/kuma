@@ -244,6 +244,7 @@ def spam_dashboard_historical_stats(
     while day > oldest:
         # Gather daily raw stats
         raw_events = SpamDayStatsJob().get(day)['events']
+        # TODO: regenerate if needs_review and stale
 
         # Create 0 records for missing raw events
         day_events = dict()

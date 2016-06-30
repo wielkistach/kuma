@@ -16,7 +16,7 @@ from kuma.wiki.models import Document, Revision
 
 from .constants import KNOWN_AUTHORS_GROUP, SPAM_DASHBOARD_NAMES
 from .forms import RevisionDashboardForm
-from .utils import spam_dashboard_historical_stats, spam_dashboard_recent_events
+from .jobs import SpamDashboardHistoricalStats, SpamDashboardRecentEvents
 from . import PAGE_SIZE
 
 
@@ -164,8 +164,9 @@ def spam(request):
     """Dashboard for spam moderators."""
 
     # Combine data sources
-    data = spam_dashboard_historical_stats()
-    data.update(spam_dashboard_recent_events())
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    data = SpamDashboardHistoricalStats().get(yesterday)
+    data.update(SpamDashboardRecentEvents().get())
     data['names'] = SPAM_DASHBOARD_NAMES
 
     return render(request, 'dashboards/spam.html', data)
