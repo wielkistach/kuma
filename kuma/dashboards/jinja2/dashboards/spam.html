@@ -137,11 +137,70 @@
                   {%- endfor %}
                 </tbody>
             </table>
-        <h2>{{ _("Events") }}</h2>
-        <h3>{{ _("Recent Published Spam") }}</h3>
-            <p><em>to do: Show 20 most recent published spam, how long visible</em></p>
-        <h3>{{ _("Recent Blocked Edits") }}</h3>
-            <p><em>to do: Show 20 most recent blocked edits, review, reviewer</em></p>
+        <h2>{{ _("Recent Events") }}</h2>
+        <h3>{{ _("Published Spam") }}</h3>
+          {% if recent_spam %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ _('Date') }}</th>
+                        <th>{{ _('Time Active (seconds)') }}</th>
+                        <th>{{ _('Revision') }}</th>
+                        <th>{{ _('Change Type') }}</th>
+                        <th>{{ _('Moderator') }}</th>
+                        <th>{{ _('Path') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rs in recent_spam -%}
+                    <tr>
+                        <td>{{ rs.date }}</td>
+                        <td>{{ rs.time_active }}</td>
+                        <td><a href="{{ rs.revision_path }}">{{ rs.revision_id }}</a></td>
+                        <td>{{ names[rs.change_type] | default(rs.change_type) }}</td>
+                        <td>{{ rs.moderator }}</td>
+                        <td><a href="{{ rs.document_path }}">{{ rs.document_path }}</a></td>
+                    </tr>
+                    {% endfor -%}
+                </tbody>
+            </table>
+          {% else %}
+            <p>{{ _("No recent published spam.") }}</p>
+          {% endif %}
+
+        <h3>{{ _("Blocked Edits") }}</h3>
+          {% if recent_blocked %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ _('Date') }}</th>
+                        <th>{{ _('Change Type') }}</th>
+                        <th>{{ _('Moderator') }}</th>
+                        <th>{{ _('Review') }}</th>
+                        <th>{{ _('Path') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rb in recent_blocked -%}
+                    <tr>
+                        <td>{{ rb.date }}</td>
+                        <td>{{ names[rb.change_type] | default(rb.change_type) }}</td>
+                        <td>{{ rb.moderator }}</td>
+                        <td><a href="{{ rb.admin_url }}">{{ rb.review }}</a></td>
+                        <td>
+                            {%- if rb.has_link -%}
+                                <a href="{{ rb.document_path }}">{{ rb.document_path }}</a>
+                            {%- else -%}
+                                {{ rb.document_path }}
+                            {%- endif -%}
+                        </td>
+                    </tr>
+                    {% endfor -%}
+                </tbody>
+            </table>
+          {% else %}
+            <p>{{ _("No recent blocked edits.") }}</p>
+          {% endif %}
 
         <div style="display:none">
         <h2>Raw</h2>
