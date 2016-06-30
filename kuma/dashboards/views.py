@@ -179,6 +179,7 @@ def spam(request):
     recent_spam = (RevisionAkismetSubmission.objects
                    .filter(type='spam')
                    .order_by('-id')[:20])
+    data['now'] = datetime.datetime.now().isoformat()
     data['recent_spam'] = []
     for rs in recent_spam:
         revision = rs.revision
