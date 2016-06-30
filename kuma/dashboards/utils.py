@@ -4,9 +4,14 @@ import datetime
 import json
 
 from django.contrib.auth.models import Group
+from django.utils.six.moves.urllib.parse import urlparse
+from django.utils.translation import ugettext as _
 
+from kuma.core.urlresolvers import reverse
 from kuma.users.models import User
-from kuma.wiki.models import DocumentSpamAttempt, Revision
+from kuma.wiki.models import (DocumentSpamAttempt,
+                              Revision,
+                              RevisionAkismetSubmission)
 from .constants import (KNOWN_AUTHORS_GROUP,
                         SPAM_DASHBOARD_DERIVED_STATS,
                         SPAM_PERIODS,
@@ -157,7 +162,8 @@ def spam_day_stats(day):
 
 
 def spam_derived_stat(events, **categories):
-    """Calculate the derived statistic from events.
+    """
+    Calculate the derived statistic from events.
 
     Examples:
     total = spam_derived_stat(events)
@@ -185,9 +191,10 @@ def spam_derived_stat(events, **categories):
     return count
 
 
-def spam_dashboard_stats(
+def spam_dashboard_historical_stats(
         periods=None, end_date=None, derived_stats=None, summary=None):
-    """Gather spam statistics for a range of dates, with derived stats.
+    """
+    Gather spam statistics for a range of dates, with derived stats.
 
     Keywords Arguments:
     periods - a sequence of (days, name) tuples
@@ -357,4 +364,100 @@ def spam_dashboard_stats(
             row.append(raw)
         data['raw']['data'].append(row)
 
+    return data
+
+
+def spam_dashboard_recent_events():
+    """Gather data for recent spam events."""
+    data = {
+        'now': datetime.datetime.now().isoformat(),
+        'recent_spam': [],
+        'recent_blocked': [],
+    }
+
+    # Gather recent published spam
+    recent_spam = (RevisionAkismetSubmission.objects
+                   .filter(type='spam')
+                   .order_by('-id')[:20])
+    for rs in recent_spam:
+        revision = rs.revision
+        document = revision.document
+
+        # How long was it active?
+        revision_ids = list(
+            document.revisions
+            .order_by('-id')
+            .values_list('id', flat=True))
+        idx = revision_ids.index(revision.id)
+        if idx == 0:
+            if document.deleted:
+                time_active = _('Deleted')
+            else:
+                time_active = _('Current')
+        else:
+            next_rev_id = revision_ids[idx - 1]
+            next_rev = Revision.objects.only('created').get(id=next_rev_id)
+            time_active_raw = next_rev.created - revision.created
+            time_active = int(time_active_raw.total_seconds())
+
+        # What type of change was it?
+        previous = revision.previous
+        if previous:
+            if document.parent:
+                change_type = 'changetype_edittrans'
+            else:
+                change_type = 'changetype_edit'
+        else:
+            if document.parent:
+                change_type = 'changetype_newtrans'
+            else:
+                change_type = 'changetype_new'
+
+        # Gather table data
+        data['recent_spam'].append({
+            'date': revision.created.date(),
+            'time_active': time_active,
+            'revision_id': revision.id,
+            'revision_path': revision.get_absolute_url(),
+            'change_type': change_type,
+            'moderator': rs.sender.username,
+            'document_path': revision.document.get_absolute_url(),
+        })
+
+    # Gather recent blocked edits
+    recent_blocked = (
+        DocumentSpamAttempt.objects.order_by('-id')[:20])
+    for rb in recent_blocked:
+        # What kind of change was attempted?
+        if rb.document:
+            has_link = True
+            document_path = rb.document.get_absolute_url()
+            if rb.document.parent:
+                change_type = 'changetype_edittrans'
+            else:
+                change_type = 'changetype_edit'
+        else:
+            has_link = False
+            if rb.data:
+                data = json.loads(rb.data)
+                if data['blog_lang'].startswith('en'):
+                    change_type = 'changetype_new'
+                else:
+                    change_type = 'changetype_newtrans'
+                url = data['permalink']
+                document_path = urlparse(url).path
+            else:
+                document_path = '/' + rb.slug
+                change_type = 'unknown'
+
+        data['recent_blocked'].append({
+            'date': rb.created.date(),
+            'admin_url': reverse('admin:wiki_documentspamattempt_change',
+                                 args=(rb.id,)),
+            'change_type': change_type,
+            'moderator': rb.reviewer.username if rb.reviewer else '',
+            'review': rb.get_review_display(),
+            'has_link': has_link,
+            'document_path': document_path,
+        })
     return data
