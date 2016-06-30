@@ -210,31 +210,19 @@
           {% else %}
             <p>{{ _('No recent blocked edits.') }}</p>
           {% endif %}
-
-        <div style="display:none">
-        <h2>Raw</h2>
-            <table>
-                <thead>
-                    <tr>
-                        {% for column_id in raw.columns %}
-                        <th class="col-{{ column | replace('_', '-') }}">{{ names[column_id] | default(column_id) }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data_row in raw.data %}
-                    <tr>
-                        {% for item in data_row %}
-                        <td><code>{{ item }}</code></td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </div>
     <ul>
         <li>{{ _('Historical data generated at %(date)s', date=generated) }}</li>
         <li>{{ _('Recent event data generated at %(date)s', date=now) }}</li>
+        <li>
+            <a href="{{ url('dashboards.spam_download', output='json') }}">
+                {{ _('Download JSON') }}
+            </a>
+        </li>
+        <p>
+            <a href="{{ url('dashboards.spam_download', output='stats.csv') }}">
+                {{ _("Download daily spam CSV") }}
+            </a>
+        </p>
     </ul>
 {% endblock %}

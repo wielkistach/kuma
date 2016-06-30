@@ -1,10 +1,11 @@
 import datetime
 import json
+import csv
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -160,13 +161,31 @@ def topic_lookup(request):
     'wiki.add_revisionakismetsubmission',
     'wiki.add_documentspamattempt',
     'wiki.add_userban'), raise_exception=True)
-def spam(request):
+def spam(request, output='html'):
     """Dashboard for spam moderators."""
 
     # Combine data sources
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     data = SpamDashboardHistoricalStats().get(yesterday)
     data.update(SpamDashboardRecentEvents().get())
-    data['names'] = SPAM_DASHBOARD_NAMES
+    data['names'] = {
+        ident: str(name) for ident, name in SPAM_DASHBOARD_NAMES.items()}
 
-    return render(request, 'dashboards/spam.html', data)
+    if output == 'json':
+        return JsonResponse(data)
+    elif output == 'stats.csv':
+        response = HttpResponse(content_type='text/csv')
+        content = 'attachment; filename="spam_stats.%s.csv"' % data['day']
+        response['Content-Disposition'] = content
+
+        writer = csv.writer(response)
+        columns = []
+        for column_id in data['raw']['columns']:
+            name = data['names'].get(column_id, column_id)
+            columns.append(name.encode('utf8'))
+        writer.writerow(columns)
+        writer.writerows(data['raw']['data'])
+
+        return response
+    else:
+        return render(request, 'dashboards/spam.html', data)

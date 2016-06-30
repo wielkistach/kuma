@@ -22,4 +22,7 @@ urlpatterns = [
     url(r'^dashboards/spam$',
         views.spam,
         name='dashboards.spam'),
+    url(r'^dashboards/spam\.(?P<output>html|json|stats\.csv)$',
+        views.spam,
+        name='dashboards.spam_download'),
 ]
