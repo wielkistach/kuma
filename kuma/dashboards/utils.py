@@ -241,10 +241,17 @@ def spam_dashboard_historical_stats(
     day = end_date
     events = []
     trends = defaultdict(Counter)
+    job = SpamDayStatsJob()
     while day > oldest:
         # Gather daily raw stats
-        raw_events = SpamDayStatsJob().get(day)['events']
-        # TODO: regenerate if needs_review and stale
+        raw_events = job.get(day)['events']
+
+        # Regenerate stats if change attempts with needs_review and stale
+        if raw_events['needs_review']:
+            age = datetime.datetime.now() - raw_events['generated']
+            if age.total_seconds > 300:
+                job.delete(day)
+                raw_events = job.get(day)['events']
 
         # Create 0 records for missing raw events
         day_events = dict()
