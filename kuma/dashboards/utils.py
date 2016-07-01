@@ -17,7 +17,8 @@ from .constants import (KNOWN_AUTHORS_GROUP,
                         SPAM_PERIODS,
                         SPAM_RATE_ID_SUFFIX,
                         SPAM_STAT_CATEGORIES,
-                        SPAM_STAT_CATEGORY_OPTIONS)
+                        SPAM_STAT_CATEGORY_OPTIONS,
+                        SPAM_STAT_CHANGE_TYPES)
 
 
 def spam_special_groups():
@@ -295,25 +296,7 @@ def spam_dashboard_historical_stats(
         'generated': datetime.datetime.now().isoformat(),
         'day': end_date.isoformat(),
         'categories': dict(SPAM_STAT_CATEGORY_OPTIONS),
-        'change_types': [
-            {
-                'id': 'changetype_new',
-                'fresh': 'new',
-                'lang': 'en',
-            }, {
-                'id': 'changetype_edit',
-                'fresh': 'edit',
-                'lang': 'en',
-            }, {
-                'id': 'changetype_newtrans',
-                'fresh': 'new',
-                'lang': 'other',
-            }, {
-                'id': 'changetype_edittrans',
-                'fresh': 'edit',
-                'lang': 'other',
-            }
-        ],
+        'change_types': SPAM_STAT_CHANGE_TYPES,
         'trends': {
             'over_time': []
         },

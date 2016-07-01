@@ -167,6 +167,10 @@ def spam(request, output='html'):
     # Combine data sources
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     data = SpamDashboardHistoricalStats().get(yesterday)
+
+    if not data:
+        return render(request, 'dashboards/spam.html', {'processing': True})
+
     data.update(SpamDashboardRecentEvents().get())
     data['names'] = {
         ident: str(name) for ident, name in SPAM_DASHBOARD_NAMES.items()}

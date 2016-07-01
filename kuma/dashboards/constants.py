@@ -18,7 +18,7 @@ SPAM_STAT_CATEGORY_OPTIONS = (
     ('lang', ('en', 'other')),
 )
 SPAM_STAT_CATEGORIES = set(name for name, opts in SPAM_STAT_CATEGORY_OPTIONS)
-SPAM_DASHBOARD_DERIVED_STATS = [
+BASE_SPAM_DASHBOARD_DERIVED_STATS = [
     {
         'id': 'total',
         'derived': {},
@@ -47,6 +47,56 @@ SPAM_DASHBOARD_DERIVED_STATS = [
         'rate_denominiator': 'spam',
     }
 ]
+
+SPAM_STAT_CHANGE_TYPES = [
+    {
+        'id': 'changetype_new',
+        'fresh': 'new',
+        'lang': 'en',
+    }, {
+        'id': 'changetype_edit',
+        'fresh': 'edit',
+        'lang': 'en',
+    }, {
+        'id': 'changetype_newtrans',
+        'fresh': 'new',
+        'lang': 'other',
+    }, {
+        'id': 'changetype_edittrans',
+        'fresh': 'edit',
+        'lang': 'other',
+    }
+]
+
+# Assemble derived stats and variationss
+SPAM_DASHBOARD_DERIVED_STATS = BASE_SPAM_DASHBOARD_DERIVED_STATS[:]
+for changetype in SPAM_STAT_CHANGE_TYPES:
+    for stat in BASE_SPAM_DASHBOARD_DERIVED_STATS:
+        ct_stat = {
+            'id': stat['id'] + '_' + changetype['id'],
+            'derived': stat['derived'].copy()
+        }
+        ct_stat['derived']['fresh'] = changetype['fresh']
+        ct_stat['derived']['lang'] = changetype['lang']
+
+        denom_id = stat.get('rate_denominiator')
+        if denom_id:
+            ct_stat['rate_denominiator'] = denom_id + '_' + changetype['id']
+        SPAM_DASHBOARD_DERIVED_STATS.append(ct_stat)
+
+for group in dict(SPAM_STAT_CATEGORY_OPTIONS)['group']:
+    for stat in BASE_SPAM_DASHBOARD_DERIVED_STATS:
+        g_stat = {
+            'id': stat['id'] + '_group_' + group,
+            'derived': stat['derived'].copy()
+        }
+        g_stat['derived']['group'] = group
+
+        denom_id = stat.get('rate_denominiator')
+        if denom_id:
+            g_stat['rate_denominiator'] = denom_id + '_group_' + group
+        SPAM_DASHBOARD_DERIVED_STATS.append(g_stat)
+
 SPAM_RATE_ID_SUFFIX = '_rate'
 SPAM_DASHBOARD_NAMES = {
     'date': pgettext_lazy('a heading for a column of days', 'Date'),

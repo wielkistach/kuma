@@ -8,7 +8,7 @@ class SpamDayStatsJob(KumaJob):
     """Cache spam stats for multiple days."""
     lifetime = 60 * 60 * 24 * 7
     fetch_on_miss = True
-    version = 2
+    version = 3
 
     def fetch(self, day):
         return spam_day_stats(day)
@@ -17,8 +17,8 @@ class SpamDayStatsJob(KumaJob):
 class SpamDashboardHistoricalStats(KumaJob):
     """Cache historical spam stats for multiple days."""
     lifetime = 60 * 60 * 24
-    fetch_on_miss = True
-    version = 2
+    fetch_on_miss = False
+    version = 5
 
     def fetch(self, end_date):
         return spam_dashboard_historical_stats(end_date=end_date)
