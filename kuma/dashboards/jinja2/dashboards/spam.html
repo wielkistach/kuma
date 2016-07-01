@@ -1,99 +1,189 @@
 {% extends 'base.html' %}
-{% set title = _('Spam Moderators Dashboard') %}
+{% set title = _('Spam Dashboard') %}
 
 {% block title %}{{ page_title(title) }}{% endblock %}
+{% block extrahead %}
+<style>
+
+.dashboard .kpis {
+    columns: 2;
+    width: 25%;
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.dashboard .kpis dt {
+    font-size: large;
+}
+
+.dashboard .kpis dd {
+    font-size: x-large;
+    margin-bottom: 10px;
+}
+
+.spam-trends-table {
+    border: 0;
+    border-collapse: collapse;
+}
+.spam-trends-table caption {
+    text-align: center;
+}
+
+.spam-trends-table .period-header {
+    text-align: center;
+}
+
+.spam-trends-table .date-current-header {
+    border-left: 1px solid black;
+    padding-left: 3px;
+}
+.spam-trends-table .data-current {
+    border-left: 1px solid black;
+    padding-left: 3px;
+}
+.spam-trends-table .rate-current {
+    border-left: 1px solid black;
+    padding-left: 3px;
+}
+.spam-trends-table .trend-current {
+    border-left: 1px solid black;
+    padding-left: 3px;
+}
+
+.spam-trends-table .date-detail-header {
+    font-size: smaller;
+    padding-left: 5px;
+}
+
+.spam-trends-table .row-header {
+    vertical-align: top;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.spam-trends-table .data {
+    text-align: right;
+    font-family: monospace;
+}
+
+.spam-trends-table .rate {
+    text-align: right;
+    font-family: monospace;
+}
+
+.spam-trends-table .trend {
+    text-align: right;
+    font-size: smaller;
+    font-family: monospace;
+}
+
+.spam-trends-table td.increase::after {
+    content: "▲";
+    font-size: smaller;
+}
+
+.spam-trends-table td.decrease::after {
+    content: "▼";
+    font-size: smaller;
+}
+
+.spam-trends-table .row-total-top {
+    border-top: 1px solid black;
+}
+
+.spam-trends-table .row-total-bottom {
+    border-bottom: 3px solid black;
+}
+
+.spam-trends-table .row-total {
+    background-color: whitesmoke;
+}
+
+
+
+</style>
+{% endblock %}
 
 {% block content %}
 
     <div class="dashboard">
         <h1>{{ title }}</h1>
-        <h2>{{ _('Summary') }}</h2>
           {% if summary.total %}
             <p>
-                {{ ngettext('Yesterday there were:',
-                            'Over the past %(num)s days, there were:',
-                            summary.days) }}
-                <ul>
-                    <li>
-                        {{- ngettext('%(num)s attempted change',
-                                     '%(num)s attempted changes',
-                                     summary.total) -}}
-                    </li>
-                    <li>
-                        {{- ngettext('%(num)s good contribution',
-                                     '%(num)s good contributions',
-                                     summary.published_ham) -}}
-                    </li>
-                    <li>
-                        {{- ngettext('%(num)s blocked spam change',
-                                     '%(num)s blocked spam changes',
-                                     summary.blocked_spam) }}
-                        (<strong>
-                            {{- _('%(rate)0.1f%% of all changes',
-                                rate=(100 * summary.blocked_spam_rate)) -}}
-                         </strong>)
-                    </li>
-                    <li>
-                        {{- ngettext('%(num)s blocked ham change',
-                                     '%(num)s blocked ham changes',
-                                     summary.blocked_ham) }}
-                        (<strong>
-                            {{- _('%(rate)0.1f%% false positive rate',
-                                rate=(100 * summary.blocked_ham_rate)) -}}
-                         </strong>)
-                    </li>
-                    <li>
-                        {{- ngettext('%(num)s published spam change',
-                                     '%(num)s published spam changes',
-                                     summary.published_spam) }}
-                        (<strong>
-                            {{- _('%(rate)0.1f%% false negative rate',
-                                rate=(100 * summary.published_spam_rate)) -}}
-                         </strong>)
-                    </li>
-                </ul>
+                {{ _('From %(start)s to %(end)s (%(weeks)s weeks):',
+                     start=summary.start, end=summary.end,
+                     weeks=summary.days // 7) }}
             </p>
+            <dl class='kpis'>
+                <dt>{{ ngettext('Edit', 'Edits', summary.total) }}</dt>
+                <dd>{{ summary.total }}<dd>
+                <dt>{{ _('Spam') }}</dt>
+                <dd>{{ "%0.1f%%" | format(100 * summary.spam_rate) }}</dd>
+                <dt>{{ _('Spam Blocked') }}</dt>
+                <dd>{{ "%d%%" | format(100 * summary.spam_blocked_rate) }}</dd>
+                <dt>{{ _('False Positive Rate') }}</dt>
+                <dd>{{ "%0.1f%%" | format(100 * summary.blocked_ham_rate) }}</dd>
+            </dl>
           {% else %}
             <p>
-                {{ ngettext('There were no edits yesterday.',
-                            'There were no edits in the past %(num)s days.',
-                            summary.days) }}
+                {{ _('There were no edits in the past %(count)s days.', count=summary.days) }}
             </p>
           {% endif %}
-        <h2>{{ _('Trends') }}</h2>
-        <h3>{{ _('Over Time') }}</h3>
-            <table>
+
+            <table class='spam-trends-table'>
+                <caption>{{ _('Trends Over Time') }}</caption>
                 <thead>
                     <tr>
-                        <th rowspan=2 class="col-period head-period">{{ _('Period') }}</th>
-                        <th colspan=9 class="col-group-this-period">{{ _('This Period') }}</th>
-                        <th colspan=9 class="col-group-last-period">{{ _('Last Period') }}</th>
+                        <th></th>
+                        {% for period in trends.over_time -%}
+                        <th colspan=2 class="period-header">{{ names[period.id] | default(period.id) }}</th>
+                        {% endfor %}
                     </tr>
                     <tr>
-                        {% for group in ('current', 'previous') -%}
-                        <th class="col-start">{{ _('Start') }}</th>
-                        <th class="col-end">{{ _('End') }}</th>
-                        <th class="col-total">{{ _('Total Edits') }}</th>
-                        <th colspan=2 class="col-blocked-spam">{{ _('Blocked Spam') }}</th>
-                        <th colspan=2 class="col-published-spam">{{ _('Published Spam') }}</th>
-                        <th colspan=2 class="col-blocked-ham">{{ _('Blocked Ham') }}</th>
+                        <th class="date-detail-header">Ending</th>
+                        {%- for period in trends.over_time -%}
+                        {%- for group in ('current', 'previous') %}
+                        <th class="date-detail-header date-{{group}}-header">{{ period[group].end }}</th>
+                        {%- endfor %}
                         {%- endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in trends.over_time -%}
-                    <tr>
-                        <th scope="row" class="col-period">{{ names[row.id] | default(row.id) }}</th>
-                        {% for group in ('current', 'previous') %}
-                        <td class="date col-start">{{ row[group].start }}</td>
-                        <td class="date col-end">{{ row[group].end }}</td>
-                        <td class="data col-total">{{ row[group].total }}</td>
-                        <td class="data col-blocked-spam">{{ row[group].blocked_spam }}</td>
-                        <td class="rate col-blocked-spam">{{ '%0.1f%%' | format(100 * row[group].blocked_spam_rate) }} </td>
-                        <td class="data col-published-spam">{{ row[group].published_spam }}</td>
-                        <td class="rate col-published-spam">{{ '%0.1f%%' | format(100 * row[group].published_spam_rate) }}</td>
-                        <td class="data col-blocked-ham">{{ row[group].blocked_ham }}</td>
-                        <td class="rate col-blocked-ham">{{ '%0.1f%%' | format(100 * row[group].blocked_ham_rate) }}</td>
+                    {%- for stat in (
+                        'published_ham', 'published_spam', 'blocked_ham', 'blocked_spam', 'total',
+                        'spam_rate', 'spam_blocked_rate', 'blocked_ham_rate') %}
+                    <tr class="row-{{stat | replace('_', '-')}} row-{{stat | replace('_', '-')}}-top">
+                        <th scope="row" rowspan=2 class="row-header">{{ names[stat] | default(stat) }}</th>
+                        {%- for period in trends.over_time -%}
+                        {%- for group in ('current', 'previous') %}
+                        {%- if stat.endswith('_rate') %}
+                        <td class="rate rate-{{group}}">{{ "%0.1f%%" | format(period[group][stat]) }}</td>
+                        {%- else %}
+                        <td class="data data-{{group}}">{{ period[group][stat] }}</td>
+                        {%- endif %}
+                        {%- endfor %}
+                        {%- endfor %}
+                    </tr>
+                    <tr class="row-{{stat | replace('_', '-')}} row-{{stat | replace('_', '-')}}-bottom">
+                        {%- for period in trends.over_time -%}
+                        {%- set diff = period['current'][stat] - period['previous'][stat] %}
+                        {%- if period['previous'][stat] > 0 %}
+                        {%- set increase = diff / period['previous'][stat] %}
+                        {%- else %}
+                        {%- set increase = 1 %}
+                        {%- endif %}
+                        {%- if diff == 0 %}
+                        <td class="trend trend-current">0%</td>
+                        {%- elif diff > 0 %}
+                        <td class="trend trend-current increase">{{ "%d%%" | format(100 * increase) }}</td>
+                        {%- else %}
+                        <td class="trend trend-current decrease">{{ "%d%%" | format(-100 * increase) }}</td>
+                        {%- endif %}
+                        <td class="trend trend-previous"></td>
                         {%- endfor %}
                     </tr>
                     {%- endfor %}

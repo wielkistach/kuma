@@ -37,6 +37,14 @@ SPAM_DASHBOARD_DERIVED_STATS = [
         'id': 'blocked_ham',
         'derived': {'content': 'ham', 'published': 'blocked'},
         'rate_denominiator': 'total',
+    }, {
+        'id': 'spam',
+        'derived': {'content': 'spam'},
+        'rate_denominiator': 'total',
+    }, {
+        'id': 'spam_blocked',
+        'derived': {'content': 'spam', 'published': 'blocked'},
+        'rate_denominiator': 'spam',
     }
 ]
 SPAM_RATE_ID_SUFFIX = '_rate'
@@ -45,8 +53,8 @@ SPAM_DASHBOARD_NAMES = {
     # Periods for trends over time
     'period_daily': _('Daily'),
     'period_weekly': _('Weekly'),
-    'period_monthly': _('Monthly (4 weeks)'),
-    'period_quarterly': _('Quarterly (13 weeks)'),
+    'period_monthly': _('Monthly'),
+    'period_quarterly': _('Quarterly'),
     # Statistics, all users
     'total': _('Total Edits'),
     'published_ham': _('Published Ham'),
@@ -57,6 +65,8 @@ SPAM_DASHBOARD_NAMES = {
     'blocked_spam_rate': _('Blocked Spam Rate'),
     'published_spam_rate': _('Published Spam Rate'),
     'blocked_ham_rate': _('Blocked Ham Rate'),
+    'spam_rate': _('Spam Rate'),
+    'spam_blocked_rate': _('Spam Blocked Rate'),
     # Groups
     'group_staff': _('MDN Staff'),
     'group_known': _('Known Authors'),
