@@ -41,18 +41,9 @@
     padding-left: 10px;
 }
 
-.spam-trends-table .date-current-header {
-    border-left: 1px solid black;
-    padding-left: 3px;
-}
-.spam-trends-table .data-current {
-    border-left: 1px solid black;
-    padding-left: 3px;
-}
-.spam-trends-table .rate-current {
-    border-left: 1px solid black;
-    padding-left: 3px;
-}
+.spam-trends-table .date-current-header,
+.spam-trends-table .data-current,
+.spam-trends-table .rate-current,
 .spam-trends-table .trend-current {
     border-left: 1px solid black;
     padding-left: 3px;
@@ -69,11 +60,7 @@
     padding-bottom: 3px;
 }
 
-.spam-trends-table .data {
-    text-align: right;
-    font-family: monospace;
-}
-
+.spam-trends-table .data,
 .spam-trends-table .rate {
     text-align: right;
     font-family: monospace;
@@ -107,7 +94,53 @@
     background-color: whitesmoke;
 }
 
+table.spam-events-table {
+    table-layout: fixed;
+    width: 100%;
+}
 
+.spam-events-table td {
+    word-break: keep-all;
+}
+
+.spam-events-table .data {
+    text-align: right;
+    padding-left: 5px;
+}
+
+
+.spam-events-table td.data {
+    font-family: monospace;
+}
+
+.spam-events-table .name {
+    text-align: left;
+    padding-right: 5px;
+}
+
+.spam-events-table .path,
+.spam-events-table .name
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spam-events-table th {
+    vertical-align: bottom;
+}
+.spam-events-table col.data,
+.spam-events-table col.name {
+    width: 14%
+}
+
+.spam-events-published-spam-table col.path {
+    width: 30%
+}
+
+.spam-events-blocked-edits-table col.path {
+    width: 44%
+}
 
 </style>
 {% endblock %}
@@ -265,28 +298,36 @@
             </table>
 
         <h2>{{ _('Recent Events') }}</h2>
-        <h3>{{ _('Published Spam') }}</h3>
           {% if recent_spam %}
-            <table>
+            <table class="spam-events-table spam-events-published-spam-table">
+                <caption>{{ _('Published Spam') }}</caption>
+                <colgroup>
+                    <col span="1" class="data">
+                    <col span="1" class="data">
+                    <col span="1" class="data">
+                    <col span="1" class="name">
+                    <col span="1" class="name">
+                    <col span="1" class="path">
+                </colgroup>
                 <thead>
                     <tr>
-                        <th>{{ _('Date') }}</th>
-                        <th>{{ _('Time Active (seconds)') }}</th>
-                        <th>{{ _('Revision') }}</th>
-                        <th>{{ _('Change Type') }}</th>
-                        <th>{{ _('Moderator') }}</th>
-                        <th>{{ _('Path') }}</th>
+                        <th class="data">{{ _('Date') }}</th>
+                        <th class="data">{{ _('Time Active (seconds)') }}</th>
+                        <th class="data">{{ _('Revision') }}</th>
+                        <th class="name">{{ _('Change Type') }}</th>
+                        <th class="name">{{ _('Moderator') }}</th>
+                        <th class="path">{{ _('Path') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for rs in recent_spam -%}
                     <tr>
-                        <td>{{ rs.date }}</td>
-                        <td>{{ rs.time_active }}</td>
-                        <td><a href="{{ rs.revision_path }}">{{ rs.revision_id }}</a></td>
-                        <td>{{ names[rs.change_type] | default(rs.change_type) }}</td>
-                        <td>{{ rs.moderator }}</td>
-                        <td><a href="{{ rs.document_path }}">{{ rs.document_path }}</a></td>
+                        <td class="data">{{ rs.date }}</td>
+                        <td class="data">{{ rs.time_active }}</td>
+                        <td class="data"><a href="{{ rs.revision_path }}">{{ rs.revision_id }}</a></td>
+                        <td class="name">{{ names[rs.change_type] | default(rs.change_type) }}</td>
+                        <td class="name">{{ rs.moderator }}</td>
+                        <td class="path"><a href="{{ rs.document_path }}">{{ rs.document_path }}</a></td>
                     </tr>
                     {% endfor -%}
                 </tbody>
@@ -295,26 +336,33 @@
             <p>{{ _('No recent published spam.') }}</p>
           {% endif %}
 
-        <h3>{{ _('Blocked Edits') }}</h3>
           {% if recent_blocked %}
-            <table>
+            <table class="spam-events-table spam-events-blocked-edits-table">
+                <caption>{{ _('Blocked Edits') }}</caption>
+                <colgroup>
+                    <col span="1" class="data">
+                    <col span="1" class="name">
+                    <col span="1" class="name">
+                    <col span="1" class="name">
+                    <col span="1" class="path">
+                </colgroup>
                 <thead>
                     <tr>
-                        <th>{{ _('Date') }}</th>
-                        <th>{{ _('Change Type') }}</th>
-                        <th>{{ _('Moderator') }}</th>
-                        <th>{{ _('Review') }}</th>
-                        <th>{{ _('Path') }}</th>
+                        <th class="data">{{ _('Date') }}</th>
+                        <th class="name">{{ _('Change Type') }}</th>
+                        <th class="name">{{ _('Moderator') }}</th>
+                        <th class="name">{{ _('Review') }}</th>
+                        <th class="path">{{ _('Path') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for rb in recent_blocked -%}
                     <tr>
-                        <td>{{ rb.date }}</td>
-                        <td>{{ names[rb.change_type] | default(rb.change_type) }}</td>
-                        <td>{{ rb.moderator }}</td>
-                        <td><a href="{{ rb.admin_url }}">{{ rb.review }}</a></td>
-                        <td>
+                        <td class="data">{{ rb.date }}</td>
+                        <td class="name">{{ names[rb.change_type] | default(rb.change_type) }}</td>
+                        <td class="name">{{ rb.moderator }}</td>
+                        <td class="name"><a href="{{ rb.admin_url }}">{{ rb.review }}</a></td>
+                        <td class="path">
                             {%- if rb.has_link -%}
                                 <a href="{{ rb.document_path }}">{{ rb.document_path }}</a>
                             {%- else -%}
