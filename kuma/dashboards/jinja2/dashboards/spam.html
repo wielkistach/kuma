@@ -251,6 +251,16 @@
                         {%- endfor %}
                     </tr>
                     {%- endfor %}
+                    {%- for change_type in change_types %}
+                    {%- set stat = change_type.id %}
+                    <tr class="row-{{stat | replace('_', '-')}} row-{{stat | replace('_', '-')}}-top row-{{stat | replace('_', '-')}}-bottom">
+                        <th scope="row" class="row-header">{{ names[stat] | default(stat) }}</th>
+                        {%- for group in categories.group %}
+                        {%- set stat_id = group + '_' + stat %}
+                        <td class="data">{{ summary[stat_id] }}</td>
+                        {%- endfor %}
+                    </tr>
+                    {%- endfor %}
                 </tbody>
             </table>
 
